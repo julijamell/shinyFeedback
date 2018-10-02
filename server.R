@@ -65,7 +65,7 @@ server <- function (input, output, session) {
   
   output$simpleRadarComp.desc  <- renderUI({ HTML("Description - Simple Radar with Comparison") })
   
-  output$simpleRadarComp.plot  <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7") })
+  output$simpleRadarComp.plot  <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], colors = "#007ba7", varlabels = c("cont1_new","cont2_new","cont3_new", "cont4_new"), labels = c("YOU","OTHERS")) })
 
   # Fancy Radar W/ Comparison
   output$fancyRadarComp.intro <- renderUI({ HTML("Introduction - Fancy Radar with Comparison")})
@@ -76,10 +76,10 @@ server <- function (input, output, session) {
   output$fancyRadarComp.desc3 <- renderUI({ HTML("Description - Fancy Radar with Comparison for Dimension 3") })
   output$fancyRadarComp.desc4 <- renderUI({ HTML("Description - Fancy Radar with Comparison for Dimension 4") })
   
-  output$fancyRadarComp.plot1 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont1") })
-  output$fancyRadarComp.plot2 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont2") })
-  output$fancyRadarComp.plot3 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont3") })
-  output$fancyRadarComp.plot4 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont4") })
+  output$fancyRadarComp.plot1 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont1", varlabels = c("cont1_new","cont2_new","cont3_new", "cont4_new"), labels = c("YOU","OTHERS")) })
+  output$fancyRadarComp.plot2 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont2", varlabels = c("cont1_new","cont2_new","cont3_new", "cont4_new"), labels = c("YOU","OTHERS")) })
+  output$fancyRadarComp.plot3 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont3", varlabels = c("cont1_new","cont2_new","cont3_new", "cont4_new"), labels = c("YOU","OTHERS")) })
+  output$fancyRadarComp.plot4 <- renderPlot({ createRadarComp(userToken = input$userToken, data = toydata[,c("cont1","cont2","cont3", "cont4")], dataComp = toydata[,c("cont1_mean","cont2_mean","cont3_mean", "cont4_mean")], color = "#007ba7", dim = "cont4", varlabels = c("cont1_new","cont2_new","cont3_new", "cont4_new"), labels = c("YOU","OTHERS")) })
 
   # Simple Line
   output$simpleLine.intro <- renderUI({ HTML("Introduction - Simple Line") })
