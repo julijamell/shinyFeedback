@@ -22,6 +22,7 @@ library(reshape)
 library(reshape2)
 library(Cairo)
 library(RColorBrewer)
+library(roxygen2)
 
 # load data and functions
 load('./toydata_full.rData')
