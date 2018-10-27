@@ -10,6 +10,7 @@ source('./ui/sidebar.R')
 source('./ui/body.R')
 
 ui <- dashboardPage(
+  skin = DASHBOARD_SKIN_COLOR,
   header = header(),
   sidebar =  sidebar(),
   body = body()

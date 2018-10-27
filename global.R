@@ -32,5 +32,13 @@ source('./functions.R')
 options(shiny.usecairo=TRUE)
 
 # set defaults
+
+# dashboard skin color. Choose from ("blue", "black", "green", "purple", "red", "yellow")
+DASHBOARD_SKIN_COLOR <- "blue"
+# column of users passwords
 userPassword <- toydata$ID
-COLOR_DEFAULT <- "#007ba7"
+# default color of all plots
+COLOR_DEFAULT_PLOT <- "#007ba7"
+COLOR_DEFAULT_USER <- "red"
+# default color of boxes headers. Choose from ("primary", "success", "info", "warning", "danger")
+STATUS_COLOR <- "primary"

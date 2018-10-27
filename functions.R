@@ -87,7 +87,7 @@ AddIntroductionTab <- function (tabId, mainTitle, introText){
   tabItem(tabName = tabId,
           fluidRow(
             box(title = mainTitle, width = 12,
-                status = "primary", solidHeader = TRUE,
+                status = STATUS_COLOR, solidHeader = TRUE,
                 htmlOutput(introText)
             )
           )
@@ -99,30 +99,37 @@ AddIntroductionTab <- function (tabId, mainTitle, introText){
 #' @param tabId A unique id to identify the tab.
 #' @param mainTitle The header of the tab.
 #' @param introText The introduction of the tab.
+#' @param descTitle The title of the description box. (optional)
 #' @param descList The description of the plot.
+#' @param descBoxWidth The width of the description box. (optional)
+#' @param plotTitle The title of the plot box. (optional)
 #' @param plotList The plot of the tab.
+#' @param plotBoxWidth The width of the plot box. (optional)
 #' 
 #' @return HTML code snippet to add a simple tabItem to main body with 3 boxes:
 #' * An introduction box
 #' * A description box
 #' * A plot box
 
-AddSimpleTab <- function (tabId, mainTitle, introText, descList, plotList){
+AddSimpleTab <- function (tabId, 
+                          mainTitle, introText,
+                          descTitle="Description", descList, descBoxWidth = 7,
+                          plotTitle = "Plot", plotList, plotBoxWidth = 5){
   tabItem(tabName = tabId,
           fluidRow(
             box(
               title = mainTitle, width = 12,
-              status = "primary", solidHeader = TRUE,
+              status = STATUS_COLOR, solidHeader = TRUE,
               htmlOutput(introText)
             )
           ),
           fluidRow(
-            box(title = "Description", width = 7,
-                status = "primary", solidHeader = TRUE,
+            box(title = descTitle, width = descBoxWidth,
+                status = STATUS_COLOR, solidHeader = TRUE,
                 htmlOutput(descList)
             ),
-            box(title = "Plot", width = 5,
-                status = "primary", solidHeader = TRUE,
+            box(title = plotTitle, width = plotBoxWidth,
+                status = STATUS_COLOR, solidHeader = TRUE,
                 plotOutput(plotList)
             )
           )
@@ -136,17 +143,24 @@ AddSimpleTab <- function (tabId, mainTitle, introText, descList, plotList){
 #' @param introText The introduction of the tab.
 #' @param descList The list of descriptions of the plots.
 #' @param plotList The list of plots of the tab.
+#' @param descTitle The title of the description box. (optional)
+#' @param plotTitle The title of the plot box. (optional)
+#' @param descBoxWidth The width of the description box. (optional)
+#' @param plotBoxWidth The width of the plot box. (optional)
 #' 
 #' @return HTML code snippet to add a multiple tabItem to main body with 3 boxes:
 #' * An introduction box
 #' * A description box with multiple tabs
 #' * A plot box with multiple tabs
 
-AddMultiTab <- function (tabId, mainTitle, introText, headList, descList, plotList){
+AddMultiTab <- function (tabId, mainTitle, introText, 
+                         headList, descList, plotList,
+                         descTitle = "Description", plotTitle = "Plot",
+                         descBoxWidth = 7, plotBoxWidth = 5){
   tabItem(tabName = tabId,
           fluidRow(
             box(title = mainTitle, width = 12,
-                status = "primary", solidHeader = TRUE,
+                status = STATUS_COLOR, solidHeader = TRUE,
                 htmlOutput(introText)
             )
           ),
@@ -156,12 +170,12 @@ AddMultiTab <- function (tabId, mainTitle, introText, headList, descList, plotLi
                       lapply(1:length(headList), function(i){
                         tabPanel(
                           title = headList[[i]],
-                          box(title = "Description", width = 7,
-                              status = "primary", solidHeader = TRUE,
+                          box(title = descTitle, width = descBoxWidth,
+                              status = STATUS_COLOR, solidHeader = TRUE,
                               htmlOutput(descList[[i]])
                           ),
-                          box(title = "Data", width = 5,
-                              status = "primary", solidHeader = TRUE,
+                          box(title = plotTitle, width = plotBoxWidth,
+                              status = STATUS_COLOR, solidHeader = TRUE,
                               plotOutput(plotList[[i]])
                           )
                         )
@@ -290,7 +304,7 @@ createBar <- function (userToken, data, uniform, color, xlabel, xlabs = NULL, si
     if(uniform){
       # if color is not set.
       if(missing(color)){
-        color = COLOR_DEFAULT
+        color = COLOR_DEFAULT_PLOT
       }
       fillColor = color
     } else {
@@ -338,33 +352,35 @@ coord_radar <- function(theta='x', start=0, direction=1){
 #' @return A ggplot radar plot.
 
 createRadar <- function (userToken, data){
+  
   # determine y axis min and max from data.
   ylimMin <- min(data, na.rm = TRUE)
   ylimMax <- max(data, na.rm = TRUE)
   
   # if user exists
   if(userToken %in% userPassword){
+    
     # filter user-specific data
-    data <- data[userToken == userPassword,]
+    data <- data[userToken == userPassword, ]
     data <- melt(data)
     
     # make the plot
-    ggplot(data, aes(x = variable, y = value, group=1)) +
+    ggplot(data, aes(x = variable, y = value, group = 1)) +
       ylim(ylimMin, ylimMax) +
       geom_point(aes(colour = "YOU"), size = 3) + 
       geom_polygon(colour = "red", size = 1, fill = NA) +
       scale_colour_manual("", values = c("YOU" = "red"))  +
       coord_radar() +
       theme_bw() + 
-      theme(axis.line=element_blank(),
-            axis.text.x = element_text(size=12,hjust=100),
-            axis.text.y =element_blank(),
-            axis.ticks=element_blank(),
-            axis.title=element_blank(),
-            legend.position="top",
-            panel.background=element_blank(),
-            panel.border=element_blank(),
-            plot.background=element_blank())
+      theme(axis.line = element_blank(),
+            axis.text.x = element_text(size = 12, hjust = 100),
+            axis.text.y = element_blank(),
+            axis.ticks = element_blank(),
+            axis.title = element_blank(),
+            legend.position = "top",
+            panel.background = element_blank(),
+            panel.border = element_blank(),
+            plot.background = element_blank())
   }
 }
 
@@ -373,18 +389,24 @@ createRadar <- function (userToken, data){
 #' @param userToken A user-specific password to show user position on the plot.
 #' @param data An input data frame.
 #' @param data An input data frame for comparison.
-#' @param colors A vector of both colors for radar plots.
+#' @param legendColors A vector of both colors for radar plots. (optional)
 #' @param dim Manually selected dimension (tab) highlighted when the relevant tab is selected. (optional)
 #' @param ylimMin Lower limit of y-axis. (optional)
-#' @param labels A character vector for legend values for two radars.
+#' @param legendLabels A character vector for legend values for two radars.
 #' @param varlabels A character vector for axis labels.
 #' 
 #' @return Two radar plots with different colors.
 
-createRadarComp <- function (userToken, data, dataComp, colors, dim = " ", ylimMin = 0, labels, varlabels){
+createRadarComp <- function (userToken, data, dataComp, legendColors = c(COLOR_DEFAULT_USER, COLOR_DEFAULT_PLOT),
+                             dim = " ", ylimMin = 0, ylimMax = NULL, legendLabels, varlabels){
   
-  # set max limit of y-axis from data.
-  ylimMax <- max(data, dataComp, na.rm = TRUE)
+  # set max limit of y-axis from data if not defined.
+  if(is.null(ylimMax)){
+    ylimMax <- max(data, dataComp, na.rm = TRUE) 
+  }
+  
+  pointLegend = c(legendColors[1], legendColors[2])
+  names(pointLegend) = c(legendLabels[1], legendLabels[2])
   
   if(userToken %in% userPassword){
     # filter row data for a specific user.
@@ -408,10 +430,11 @@ createRadarComp <- function (userToken, data, dataComp, colors, dim = " ", ylimM
     # plot the radars.
     ggplot(data, aes(x = variable)) +
       ylim(ylimMin, ylimMax) +
-      geom_point(aes(y = value, group = 1, colour = labels[1]), size = 3) + 
-      geom_point(aes(y = valueComp, group = 1, colour = labels[2]), size = 3) + 
-      geom_polygon(aes(y = value, group = 1), colour = colors[1], size = 1, fill = NA) +
-      geom_polygon(aes(y = valueComp, group = 1), colour = colors[2], size = 1, fill = NA) +
+      geom_point(aes(y = value, group = 1, colour = legendLabels[1]), size = 3) + 
+      geom_point(aes(y = valueComp, group = 1, colour = legendLabels[2]), size = 3) + 
+      geom_polygon(aes(y = value, group = 1), colour = legendColors[1], size = 1, fill = NA) +
+      geom_polygon(aes(y = valueComp, group = 1), colour = legendColors[2], size = 1, fill = NA) +
+      scale_colour_manual("", values = pointLegend)  +
       coord_radar() +
       theme_bw() + 
       theme(axis.line = element_blank(),
@@ -424,7 +447,8 @@ createRadarComp <- function (userToken, data, dataComp, colors, dim = " ", ylimM
             plot.background = element_blank(),
             legend.position = "top",
             legend.title = element_blank(),
-            legend.text = element_text(size=12))
+            legend.text = element_text(size = 10))+
+      guides(color = guide_legend(nrow = 2))
   }
 }
 
@@ -484,10 +508,41 @@ formatLineData <- function (userToken, data, xlength, dimnames = NULL){
 #' @param dim Manually selected dimension (tab) highlighted when the relevant tab is selected. (optional)
 #' @param xlabs A character vector of x-axis tick labels with length equal to xlength. (optional)
 #' @param dimnames A chacter vector representing line labels in the legend. (optional)
+#' @param legendTitle Title of the legend. (optional)
+#' @param ylimMin Lower limit of y-axis. (optional)
+#' @param ylimMax Upper limit of y-axis. (optional)
+#' @param thinlines If TRUE, set variable sizes of lines. (optional)
+#' @param xrotate If TRUE, rotate x-axis tick labels by 90 degree. (optional)
 #' 
 #' @return A plot with multiple lines.
 
-createLine <- function(userToken, data, xlength, dim = " ", xlabs = NULL, dimnames = NULL){
+userToken = "81"
+data = toydata[,c("ts_var1_V1_1","ts_var1_V1_2","ts_var1_V1_3", "ts_var1_V1_4", "ts_var1_V1_5",
+                  "ts_var1_V2_1","ts_var1_V2_2","ts_var1_V2_3", "ts_var1_V2_4", "ts_var1_V2_5",
+                  "ts_var2_V1_1","ts_var2_V1_2","ts_var2_V1_3", "ts_var2_V1_4", "ts_var2_V1_5",
+                  "ts_var2_V2_1","ts_var2_V2_2","ts_var2_V2_3", "ts_var2_V2_4", "ts_var2_V2_5")] 
+xlength = 5
+dim = "line4"
+xrotate = TRUE
+thinLines = FALSE
+legendTitle = "TESTING"
+xlabs = c("a","b","c","d","e")
+
+createLine <- function(userToken, data, xlength, dim = " ", xlabs = NULL, 
+                       dimnames = NULL, legendtitle = "", ylimMin = 0, ylimMax = NULL, 
+                       thinlines = FALSE, xrotate = FALSE){
+  
+  if(is.null(ylimMax)){
+    ylimMax <- 1.1 * max(data)
+  }
+  
+  if(xrotate){
+    gg_angle = 90
+    gg_hjust = 1
+  } else {
+    gg_angle = 0
+    gg_hjust = 0.5
+  }
   
   if(userToken %in% userPassword){
     data <- formatLineData(userToken, data, xlength, dimnames = dimnames)
@@ -501,7 +556,9 @@ createLine <- function(userToken, data, xlength, dim = " ", xlabs = NULL, dimnam
     data$line_size <- ifelse(data$variable == dim, 2, 0.8)
     
     ggplot(data, aes(x = xlabel, y = value, group = variable, color = variable)) + 
-      geom_line(aes(size = line_size)) +
+      ylim(ylimMin, ylimMax) +
+      geom_line(aes(size = 1)) +
+      {if(!thinlines)geom_line(aes(size = line_size))} +
       geom_point(aes(size = line_size)) +
       theme_bw() + 
       theme(axis.text = element_text(size=12),
@@ -513,10 +570,12 @@ createLine <- function(userToken, data, xlength, dim = " ", xlabs = NULL, dimnam
             axis.line = element_line(colour = "black"),
             panel.grid.major = element_blank(),
             panel.grid.minor = element_blank(),
-            legend.text = element_text(size = 12)
+            legend.text = element_text(size = 12),
+            legend.position ="bottom",
+            axis.text.x = element_text(angle = gg_angle, hjust = gg_hjust)
            ) +
-      guides(size = FALSE) +
-      labs(color = "LEGEND") +
+      guides(size = FALSE, colour = guide_legend(nrow = xlength)) +
+      labs(color = legendtitle) +
       scale_x_discrete(limits = xlabs)
   }
 }
